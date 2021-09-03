@@ -13,7 +13,7 @@ class ProductsController extends Controller
         $buider = Product::query()->where('on_sale', true);
         // 判断是否有提交 search 参数，如果有就赋值给 $search 变量
         // search 参数用户模糊搜索商品
-        if ($search =  $request->input('search', '')) {
+        if ($search = $request->input('search', '')) {
             $like = '%' . $search . '%';
             // 模糊搜多商品标题，商品详情，SKU标题、SKU描述
             $buider->where(function ($query) use ($like) {
@@ -42,16 +42,22 @@ class ProductsController extends Controller
 
         return view('products.index', [
             'products' => $products,
-            'filters'  => [
+            'filters' => [
                 'search' => $search,
-                'order'  => $order,
+                'order' => $order,
             ],
         ]);
     }
 
-
-    public function show(Product $product)
+    public function show(Product $product, Request $request)
     {
-        //
+
+        // dda($product->skus);
+        // 判断商品是否上架，如果未上架则抛出异常
+        if (!$product->on_sale) {
+            throw new \Exception('商品未上架');
+        }
+
+        return view('products.show', compact('product'));
     }
 }
