@@ -78,7 +78,7 @@
 
      // 监听收藏按钮的点击事件
      $('.btn-favor').click(function () {
-      axios.post('{{ route('products.favor', ['product' => $product->id]) }}')
+      axios.post("{{ route('products.favor', ['product' => $product->id]) }}")
         .then(function () {
             swal('操作成功', '', 'success')
             .then(function () {  // 这里加了一个 then() 方法
@@ -96,13 +96,48 @@
     });
 
     $('.btn-disfavor').click(function () {
-      axios.delete('{{ route('products.disfavor', ['product' => $product->id]) }}')
+      axios.delete("{{ route('products.disfavor', ['product' => $product->id]) }}")
         .then(function () {
           swal('操作成功', '', 'success')
             .then(function () {
                 location.reload();
             });
         });
+    });
+
+    // 加入购物车按钮点击事件
+    $('.btn-add-to-cart').click(function () {
+
+      // 请求加入购物车接口
+      axios.post("{{ route('cart.add') }}", {
+        sku_id: $('label.active input[name=skus]').val(),
+        amount: $('.cart_amount input').val(),
+      })
+        .then(function () { // 请求成功执行此回调
+          swal('加入购物车成功', '', 'success');
+        }, function (error) { // 请求失败执行此回调
+          if (error.response.status === 401) {
+
+            // http 状态码为 401 代表用户未登陆
+            swal('请先登录', '', 'error');
+
+          } else if (error.response.status === 422) {
+
+            // http 状态码为 422 代表用户输入校验失败
+            var html = '<div>';
+            _.each(error.response.data.errors, function (errors) {
+              _.each(errors, function (error) {
+                html += error + '<br>';
+              })
+            });
+            html += '</div>';
+            swal({ content: $(html)[0], icon: 'error' })
+          } else {
+
+            // 其他情况应该是系统挂了
+            swal('系统错误', '', 'error');
+          }
+        })
     });
   });
 </script>
