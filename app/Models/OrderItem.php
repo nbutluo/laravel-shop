@@ -10,10 +10,7 @@ class OrderItem extends Model
     use HasFactory;
 
     protected $fillable = ['amount', 'price', 'rating', 'review', 'reviewed_at'];
-
-    // 需要被转换成日期的属性。
     protected $dates = ['reviewed_at'];
-
     public $timestamps = false;
 
     public function product()

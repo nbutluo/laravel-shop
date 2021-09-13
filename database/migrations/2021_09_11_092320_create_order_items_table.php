@@ -16,7 +16,7 @@ class CreateOrderItemsTable extends Migration
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
             $table->unsignedBigInteger('product_sku_id');
             $table->foreign('product_sku_id')->references('id')->on('product_skus')->onDelete('cascade');
-            $table->unsignedBigInteger('amount');
+            $table->unsignedInteger('amount');
             $table->decimal('price', 10, 2);
             $table->unsignedInteger('rating')->nullable();
             $table->text('review')->nullable();
