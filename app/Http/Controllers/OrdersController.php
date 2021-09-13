@@ -9,9 +9,22 @@ use App\Models\Order;
 use App\Models\ProductSku;
 use App\Models\UserAddress;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class OrdersController extends Controller
 {
+    public function index(Request $request)
+    {
+        $orders = Order::query()
+            // 使用 with 方法预加载，避免 N+1 问题
+            ->with(['items.product','items.ProductSku'])
+            ->where('user_id', $request->user()->id)
+            ->orderBy('created_at', 'desc')
+            ->paginate();
+
+        return view('orders.index', ['orders'=> $orders]);
+    }
+
     public function store(OrderRequest $request)
     {
         $user = $request->user();
