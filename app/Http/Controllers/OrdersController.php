@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\InvalidRequestException;
 use App\Http\Requests\OrderRequest;
+use App\Jobs\CloseOrder;
 use App\Models\Order;
 use App\Models\ProductSku;
 use App\Models\UserAddress;
@@ -23,10 +24,10 @@ class OrdersController extends Controller
             // 创建一个订单
             $order = new Order([
                 'address' => [ // 将地址信息放入订单中
-                                    'address' => $address->full_address,
-                                    'zip' => $address->zip,
-                                    'contact_name' => $address->contact_name,
-                                    'contact_phone' => $address->contact_phone,
+                    'address' => $address->full_address,
+                    'zip' => $address->zip,
+                    'contact_name' => $address->contact_name,
+                    'contact_phone' => $address->contact_phone,
                 ],
                 'remark' => $request->input('remark'),
                 'total_amount' => 0,
@@ -64,6 +65,8 @@ class OrdersController extends Controller
 
             return $order;
         });
+
+        $this->dispatch(new CloseOrder($order, config('app.order_ttl')));
 
         return $order;
     }
