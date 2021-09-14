@@ -1,6 +1,8 @@
 <?php
 
 return [
+    // 内网穿透
+    'ngrok_url' => env('NGROK_URL'),
 
     // 订单超时未支付时间，单位为秒
     'order_ttl' => 1800,
