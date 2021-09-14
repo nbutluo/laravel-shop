@@ -15,7 +15,7 @@
         "laravel/tinker": "^2.5",
         "overtrue/laravel-lang": "^5.0",
         "viacreative/sudo-su": "~1.1",
-        "yansongda/pay": "^3.0"
+        "yansongda/pay": "2.10.2"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
