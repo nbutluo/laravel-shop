@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Encore\Admin\Traits\DefaultDatetimeFormat;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 use App\Exceptions\CouponCodeUnavailableException;
 
 class CouponCode extends Model
@@ -100,13 +101,14 @@ class CouponCode extends Model
             return max(0.01, $orderAmount - $this->value);
         }
 
-        return number_format($orderAmount * (100 - $this->value) / 100, '.', '');
+        return number_format($orderAmount * (100 - $this->value) / 100, 2, '.', '');
     }
 
     public function changeUsed($increase = true)
     {
+        // 传入 true 代表新增用量，否则是减少用量
         if ($increase) {
-            // 与检查 SKU 库类似，这里需要检查当前用量是否已经超过总量
+            // 与检查 SKU 库存类似，这里需要检查当前用量是否已经超过总量
             return $this->where('id', $this->id)->where('used', '<', $this->total)->increment('used');
         } else {
             return $this->decrement('used');

@@ -65,6 +65,8 @@ class OrderService
                 $coupon->checkAvailable($totalAmount);
                 // 把订单金额修改为优惠后的金额
                 $totalAmount = $coupon->getAdjustedPrice($totalAmount);
+                // 将订单与优惠券关联
+                $order->couponCode()->associate($coupon);
                 // 增加优惠券的用量，需判断返回值
                 if ($coupon->changeUsed() <= 0) {
                     throw new CouponCodeUnavailableException('该优惠券已被兑完');
